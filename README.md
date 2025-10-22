@@ -27,9 +27,9 @@ HTML / CSS / JavaScript で作成しており、データはブラウザ内の *
 3. 支出一覧が表示され、上部に合計金額が更新されます  
 4. 「CSVエクスポート」ボタンを押すと、`expenses_YYYYMMDD.csv` がダウンロードされます  
 
-
+---
 ## 🗂️ フォルダ構成
-```
+
 expense-tracker/
 ├── index.html # アプリの画面構造
 ├── style.css # デザイン（色・配置など）
@@ -38,4 +38,4 @@ expense-tracker/
 │ ├── 仕様書.md
 │ └── 改訂済み仕様書.md
 └── README.md # この説明書
-```
+---
