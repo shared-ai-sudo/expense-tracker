@@ -29,7 +29,8 @@ HTML / CSS / JavaScript で作成しており、データはブラウザ内の *
 
 ---
 ## 🗂️ フォルダ構成
-
+README.md # この説明書
+```
 expense-tracker/
 ├── index.html # アプリの画面構造
 ├── style.css # デザイン（色・配置など）
@@ -38,4 +39,5 @@ expense-tracker/
 │ ├── 仕様書.md
 │ └── 改訂済み仕様書.md
 └── README.md # この説明書
+```
 ---
