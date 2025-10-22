@@ -39,3 +39,13 @@ HTML / CSS / JavaScript で作成しており、データはブラウザ内の *
 ---
 
 ## 🗂️ フォルダ構成
+```
+expense-tracker/
+├── index.html # アプリの画面構造
+├── style.css # デザイン（色・配置など）
+├── main.js # アプリの動作（保存・削除・出力）
+├── docs/
+│ ├── 仕様書.md
+│ └── 改訂済み仕様書.md
+└── README.md # この説明書
+```
