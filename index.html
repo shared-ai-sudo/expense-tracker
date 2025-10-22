@@ -1,0 +1,231 @@
+html<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>支出記録アプリ - Expense Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- TEST: ヘッダー部の表示確認 -->
+    <header class="app-header">
+        <h1>支出記録アプリ</h1>
+        <div class="total-display" id="totalDisplay">
+            <span class="total-label">総支出</span>
+            <span class="total-amount" id="totalAmount">¥0</span>
+        </div>
+    </header>
+
+    <main class="app-main">
+        <!-- TEST: 入力フォームのバリデーション動作確認 -->
+        <section class="input-section">
+            <h2>支出を追加</h2>
+            <form id="expenseForm" novalidate>
+                <!-- 金額入力 -->
+                <div class="form-group">
+                    <label for="amount">
+                        金額 <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="number" 
+                        id="amount" 
+                        name="amount"
+                        aria-required="true"
+                        aria-describedby="amount-error"
+                        placeholder="1,000"
+                        min="1"
+                        max="9999999"
+                    >
+                    <div class="error-message" id="amount-error" role="alert"></div>
+                </div>
+
+                <!-- カテゴリ選択 -->
+                <div class="form-group">
+                    <label for="category">
+                        カテゴリ <span class="required">*</span>
+                    </label>
+                    <select 
+                        id="category" 
+                        name="category"
+                        aria-required="true"
+                        aria-describedby="category-error"
+                    >
+                        <option value="">選択してください</option>
+                        <option value="food">🍽️ 食費</option>
+                        <option value="transport">🚗 交通費</option>
+                        <option value="entertainment">🎮 娯楽</option>
+                        <option value="utilities">💡 光熱費</option>
+                        <option value="other">📦 その他</option>
+                    </select>
+                    <div class="error-message" id="category-error" role="alert"></div>
+                </div>
+
+                <!-- 日付入力 -->
+                <div class="form-group">
+                    <label for="date">
+                        日付 <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="date" 
+                        id="date" 
+                        name="date"
+                        aria-required="true"
+                        aria-describedby="date-error"
+                    >
+                    <!-- TEST: 日付ショートカットボタンの動作確認 -->
+                    <div class="date-shortcuts">
+                        <button type="button" class="btn-shortcut" id="btn-today" aria-label="今日の日付を入力">今日</button>
+                        <button type="button" class="btn-shortcut" id="btn-yesterday" aria-label="昨日の日付を入力">昨日</button>
+                        <button type="button" class="btn-shortcut" id="btn-last-weekend" aria-label="先週末の日付を入力">先週末</button>
+                    </div>
+                    <div class="error-message" id="date-error" role="alert"></div>
+                </div>
+
+                <!-- メモ入力 -->
+                <div class="form-group">
+                    <label for="memo">メモ</label>
+                    <textarea 
+                        id="memo" 
+                        name="memo"
+                        aria-describedby="memo-counter memo-error"
+                        placeholder="メモ（任意、100文字以内）"
+                        rows="3"
+                        maxlength="100"
+                    ></textarea>
+                    <!-- TEST: 文字数カウンタの動作確認 -->
+                    <div class="memo-counter" id="memo-counter">0/100文字</div>
+                    <div class="error-message" id="memo-error" role="alert"></div>
+                </div>
+
+                <!-- 送信ボタン -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <span id="submitBtnText">追加</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="cancelBtn" style="display: none;">
+                        キャンセル
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- TEST: フィルター・ソート機能の動作確認 -->
+        <section class="filter-section">
+            <h2>絞り込み・並び替え</h2>
+            <div class="filter-controls">
+                <!-- カテゴリフィルター -->
+                <div class="filter-group">
+                    <label for="filter-category">カテゴリ</label>
+                    <select id="filter-category" aria-label="カテゴリでフィルタ">
+                        <option value="all">すべて</option>
+                        <option value="food">🍽️ 食費</option>
+                        <option value="transport">🚗 交通費</option>
+                        <option value="entertainment">🎮 娯楽</option>
+                        <option value="utilities">💡 光熱費</option>
+                        <option value="other">📦 その他</option>
+                    </select>
+                </div>
+
+                <!-- 期間フィルター -->
+                <div class="filter-group">
+                    <label for="filter-period">期間</label>
+                    <select id="filter-period" aria-label="期間でフィルタ">
+                        <option value="all">すべて</option>
+                        <option value="thisMonth">今月</option>
+                        <option value="lastMonth">先月</option>
+                    </select>
+                </div>
+
+                <!-- 検索 -->
+                <div class="filter-group filter-search">
+                    <label for="search-query">検索</label>
+                    <input 
+                        type="text" 
+                        id="search-query" 
+                        placeholder="メモ・カテゴリで検索"
+                        aria-label="メモまたはカテゴリで検索"
+                    >
+                </div>
+
+                <!-- ソート -->
+                <div class="filter-group">
+                    <label for="sort-key">並び順</label>
+                    <select id="sort-key" aria-label="並び順を選択">
+                        <option value="date-desc">日付（新しい順）</option>
+                        <option value="date-asc">日付（古い順）</option>
+                        <option value="amount-desc">金額（高い順）</option>
+                        <option value="amount-asc">金額（低い順）</option>
+                        <option value="category">カテゴリ順</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-summary" id="filterSummary">
+                <span id="filteredCount">0</span>件 / 合計 <span id="filteredTotal">¥0</span>
+            </div>
+        </section>
+
+        <!-- TEST: 支出リストの表示・編集・削除機能確認 -->
+        <section class="list-section">
+            <h2>支出一覧</h2>
+            <div id="expenseList" class="expense-list" role="list">
+                <!-- 空状態のメッセージ -->
+                <div class="empty-state" id="emptyState">
+                    <p>最初の支出を追加しましょう</p>
+                    <button type="button" class="btn btn-secondary" id="addDummyBtn">
+                        サンプルデータを追加
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TEST: データ管理機能の動作確認 -->
+        <section class="footer-section">
+            <div class="footer-actions">
+                <button type="button" class="btn btn-danger" id="clearAllBtn" aria-label="すべてのデータを削除">
+                    全削除
+                </button>
+                <button type="button" class="btn btn-secondary" id="exportBtn" aria-label="CSVファイルをエクスポート">
+                    CSVエクスポート
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- TEST: トースト通知の表示確認 -->
+    <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- TEST: モーダルの表示・操作確認 -->
+    <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" style="display: none;">
+        <div class="modal-content">
+            <h3 id="modal-title">メモ全文</h3>
+            <div id="modal-body" class="modal-body"></div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-primary" id="modal-close">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🌙 ダークモード切り替えボタン（ボディの一番下に置く） -->
+    <button class="dark-toggle" id="darkToggle">🌙 ダークモード</button>
+
+    <!-- アプリ本体のJSは1回だけ読み込む -->
+    <script src="main.js"></script>
+
+    <!-- ダークモードのスクリプト（ボタンより後に置く） -->
+    <script>
+      const toggle = document.getElementById('darkToggle');
+      const isDark = localStorage.getItem('dark-mode') === 'true';
+      if (isDark) {
+        document.body.classList.add('dark-mode');
+        toggle.textContent = '☀️ ライトモード';
+      }
+      toggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const nowDark = document.body.classList.contains('dark-mode');
+        localStorage.setItem('dark-mode', nowDark);
+        toggle.textContent = nowDark ? '☀️ ライトモード' : '🌙 ダークモード';
+      });
+    </script>
+</body>
+</html>
+
